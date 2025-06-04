@@ -14,12 +14,7 @@ function Register() {
   });
 
   const onSubmit = (data) => {
-    mutate(data, {
-      onSuccess: () => {
-        navigate("/");
-        console.log("success");
-      },
-    });
+    mutate(data);
   };
 
   return (

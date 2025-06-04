@@ -3,7 +3,9 @@ import jwt from "jsonwebtoken";
 const userAuth = async (req, res, next) => {
   const { refreshToken } = req.cookies;
   if (!refreshToken) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
+    return res
+      .status(401)
+      .json({ success: false, message: "Unauthorized no token" });
   }
   try {
     const decoded = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);

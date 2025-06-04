@@ -1,5 +1,5 @@
 import React from "react";
-
+import { NavLink } from "react-router";
 const Public = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -37,12 +37,12 @@ const Public = () => {
           </div>
         </main>
         <footer className="text-center">
-          <Link
+          <NavLink
             to="/login"
             className="inline-block bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-200"
           >
             Get Started →
-          </Link>
+          </NavLink>
         </footer>
       </section>
     </div>

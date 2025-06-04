@@ -1,6 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-
+import { useToken } from "../store/useTokenStore";
+import { useNavigate } from "react-router";
+import { useSetPersist } from "../store/usePersistUserStore";
 // Login
 const baseURL = "http://localhost:5000";
 export const useLoginUsers = () => {
@@ -26,6 +28,9 @@ export const useLoginUsers = () => {
 
 // REgister
 export const useRegister = () => {
+  const token = useToken();
+  const persist = useSetPersist();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: (data) =>
       axios
@@ -41,38 +46,13 @@ export const useRegister = () => {
         .then((res) => {
           return res.data.accessToken;
         }),
-    onSuccess: () => {
-      console.log("success register");
+    onSuccess: (accessToken) => {
+      navigate("/home");
+      persist(true);
+      token(accessToken);
     },
     onError: (data) => {
       console.log(data.response.data.message);
-    },
-  });
-};
-
-export const useGetUserData = (enable = false) => {
-  return useQuery({
-    queryKey: ["userData"],
-    queryFn: () =>
-      axios.get(`${baseURL}/api/user/data`).then((res) => res.data.userData),
-    onSuccess: () => {
-      console.log("Data  fetch");
-    },
-    enable: !!enable,
-  });
-};
-
-export const useGetUserAuth = () => {
-  return useQuery({
-    queryKey: ["authStatus"],
-    queryFn: () =>
-      axios
-        .get(`${baseURL}/api/auth/is-auth`, {
-          withCredentials: true,
-        })
-        .then((res) => res.data),
-    onSuccess: () => {
-      console.log("User authenticated");
     },
   });
 };

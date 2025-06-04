@@ -1,8 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { useLoginUsers } from "../hook/useAuth";
+import { usePersist } from "../store/usePersistUserStore";
 
 function SignIn() {
+  const persist = usePersist();
   const navigate = useNavigate();
   const { mutate } = useLoginUsers();
   const { register, handleSubmit } = useForm({
@@ -16,6 +18,7 @@ function SignIn() {
     mutate(data, {
       onSuccess: () => {
         navigate("/");
+        persist(true);
         console.log("success");
       },
     });

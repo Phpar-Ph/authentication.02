@@ -143,34 +143,60 @@ export const logout = async (req, res) => {
   }
 };
 // REFRESH
+export const handleRefresh = async (req, res) => {
+  try {
+    const cookies = req.cookies;
 
-export const handleRefresh = (req, res) => {
-  const { refreshToken } = req.cookies;
-  if (!refreshToken || !refreshToken.jwt) {
-    return res.status(401).json({
+    if (!cookies?.refreshToken) {
+      return res.status(401).json({
+        success: false,
+        message: "No refresh token provided",
+      });
+    }
+
+    const refreshToken = cookies.refreshToken;
+
+    // Verify refresh token
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      async (err, decoded) => {
+        if (err) {
+          return res.status(403).json({
+            success: false,
+            message: "Invalid refresh token",
+          });
+        }
+
+        // Find user
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+          return res.status(401).json({
+            success: false,
+            message: "User not found",
+          });
+        }
+
+        // Generate new access token
+        const accessToken = jwt.sign(
+          { id: user._id },
+          process.env.ACCESS_TOKEN_SECRET,
+          { expiresIn: "15s" }
+        );
+
+        res.json({
+          success: true,
+          accessToken,
+        });
+      }
+    );
+  } catch (error) {
+    res.status(500).json({
       success: false,
-      message: "Unauthorized",
+      message: "Internal server error",
     });
   }
-
-  const decoded = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
-
-  if (!decoded) {
-    return res.status(403).json({
-      success: false,
-      message: "Forbidden: Invalid refresh token",
-    });
-  }
-  const accessToken = jwt.sign(
-    { id: decoded.id },
-    process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "10s" }
-  );
-  console.log("ACCESS TOKEN", accessToken);
-  return res.status(200).json({
-    success: true,
-    accessToken,
-  });
 };
 
 // check if user is authenticated

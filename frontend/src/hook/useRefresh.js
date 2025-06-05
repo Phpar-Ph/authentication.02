@@ -1,20 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-// import { useAxiosInstance } from "../api/axios";
-import { useToken } from "../store/useTokenStore";
-const baseURL = "http://localhost:5000";
+import { refreshToken } from "../features/auth/api";
 
 export const useRefresh = () => {
-  const token = useToken();
-
   return useQuery({
     queryKey: ["refresh"],
-    queryFn: async () => {
-      const response = await axios.get(`${baseURL}/api/auth/refresh`, {
-        withCredentials: true,
-      });
-      token(response.data.accessToken);
-      return response.data.accessToken;
+    queryFn: refreshToken,
+    onSuccess: () => {
+      console.log("refresh");
     },
     enabled: false, // Prevent auto-fetching
     retry: false, // Disable retries on failure

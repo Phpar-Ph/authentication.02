@@ -5,4 +5,4 @@ const useStoreData = create((set) => ({
   setUserData: (data) => set({ userData: data }),
 }));
 
-export default useStoreData;
+export const useSetUserData = () => useStoreData((state) => state.setUserData);

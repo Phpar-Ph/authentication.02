@@ -1,24 +1,18 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { useToken } from "../store/useTokenStore";
+import { useSetToken } from "../store/useTokenStore";
 import { useNavigate } from "react-router";
 import { useSetPersist } from "../store/usePersistUserStore";
-// Login
-const baseURL = "http://localhost:5000";
+import { register, login } from "../features/auth/api";
 export const useLoginUsers = () => {
+  const setToken = useSetToken();
+  const persist = useSetPersist();
+  const navigate = useNavigate();
   return useMutation({
-    mutationFn: (data) =>
-      axios
-        .post(
-          `${baseURL}/api/auth/login`,
-          { email: data.email, password: data.password },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          return res.data.accessToken;
-        }),
-    onSuccess: () => {
-      console.log("Success Login");
+    mutationFn: login,
+    onSuccess: (accessToken) => {
+      setToken(accessToken);
+      persist(true);
+      navigate("/home");
     },
     onError: () => {
       console.log("Sign-in failed, please try again.");
@@ -28,28 +22,17 @@ export const useLoginUsers = () => {
 
 // REgister
 export const useRegister = () => {
-  const token = useToken();
+  const setToken = useSetToken();
   const persist = useSetPersist();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: (data) =>
-      axios
-        .post(
-          `${baseURL}/api/auth/register`,
-          {
-            name: data.name,
-            email: data.email,
-            password: data.password,
-          },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          return res.data.accessToken;
-        }),
+    mutationFn: register,
     onSuccess: (accessToken) => {
-      navigate("/home");
+      setToken(accessToken);
       persist(true);
-      token(accessToken);
+      console.log("ACCESS TOKEN set:", accessToken);
+
+      navigate("/home");
     },
     onError: (data) => {
       console.log(data.response.data.message);

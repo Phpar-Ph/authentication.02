@@ -30,7 +30,7 @@ export const register = async (req, res) => {
     const accessToken = jwt.sign(
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10s" }
+      { expiresIn: "10m" }
     );
 
     // REFRESH TOKEN 7Days
@@ -89,7 +89,7 @@ export const login = async (req, res) => {
     const accessToken = jwt.sign(
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10s" }
+      { expiresIn: "10m" }
     );
 
     // REFRESH TOKEN 7Days
@@ -174,7 +174,7 @@ export const handleRefresh = async (req, res) => {
         if (!user) {
           return res.status(401).json({
             success: false,
-            message: "User not found",
+            message: "Unauthorized token",
           });
         }
 

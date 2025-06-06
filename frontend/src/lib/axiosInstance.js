@@ -1,9 +1,7 @@
 import { BASEURL } from "../constants/baseUrl";
 import axios from "axios";
 import { useStoreToken } from "../store/useTokenStore";
-
-
-
+const { setAccessToken } = useStoreToken.getState();
 const axiosInstance = axios.create({
   baseURL: BASEURL,
   withCredentials: true,
@@ -21,11 +19,10 @@ export const axiosInstanceNoHeader = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const token = useStoreToken((state) => state.accessToken);
-  console.log("TOKEN", token);
+  const token = useStoreToken.getState().accessToken;
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-    console.log("TOKEN", token);
   }
 
   return config;
@@ -34,15 +31,19 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const setToken = useStoreToken((state) => state.setAccessToken);
+    console.log("Response error status:", error.response?.status);
+    const setToken = setAccessToken;
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
+      console.log("Attempting token refresh...");
       try {
-        const response = await axiosInstanceNoHeader.get("/api/auth/refresh");
+        const response = await axios.get(`${BASEURL}/api/auth/refresh`, {
+          withCredentials: true,
+        });
         const newToken = response.data.accessToken;
         setToken(newToken);
-
+        console.log("New token received:", newToken);
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         console.log("fetching new token");
         return axiosInstance(originalRequest);

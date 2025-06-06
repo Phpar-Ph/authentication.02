@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../model/userModel.js";
 // register
+const expireToken = "10s";
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -30,7 +31,7 @@ export const register = async (req, res) => {
     const accessToken = jwt.sign(
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10m" }
+      { expiresIn: expireToken }
     );
 
     // REFRESH TOKEN 7Days
@@ -92,7 +93,7 @@ export const login = async (req, res) => {
     const accessToken = jwt.sign(
       { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10m" }
+      { expiresIn: expireToken }
     );
 
     // REFRESH TOKEN 7Days
@@ -161,46 +162,32 @@ export const handleRefresh = async (req, res) => {
     }
 
     const refreshToken = cookies.refreshToken;
-
     // Verify refresh token
-    jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET,
-      async (err, decoded) => {
-        if (err) {
-          return res.status(403).json({
-            success: false,
-            message: "Invalid refresh token",
-          });
-        }
-
-        // Find user
-        const user = await User.findById(decoded.id);
-
-        if (!user) {
-          return res.status(401).json({
-            success: false,
-            message: "Unauthorized token",
-          });
-        }
-
-        // Generate new access token
-        const accessToken = jwt.sign(
-          { id: user._id },
-          process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "15s" }
-        );
-
-        res.json({
-          success: true,
-          accessToken,
-        });
-      }
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    // Find user
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    // Generate new access token
+    const accessToken = jwt.sign(
+      { id: user._id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: expireToken }
     );
+    console.log("successfully");
+
+    res.json({
+      success: true,
+      accessToken,
+    });
   } catch (error) {
-    res.status(500).json({
+    res.status(403).json({
       success: false,
-      message: "Internal server error",
+      message: "Invalid Refresh token",
     });
   }
 };

@@ -4,18 +4,20 @@ import { useNavigate } from "react-router";
 import { useSetPersist } from "../store/usePersistUserStore";
 import { registerUser, logoutUser, loginUser } from "../features/auth/api";
 import { useSetUserData } from "../store/useStoreUserData";
+
 export const useLoginUsers = () => {
   const navigate = useNavigate();
   const userData = useSetUserData();
+  const persist = useSetPersist();
   const setToken = useStoreToken((state) => state.setAccessToken);
   return useMutation({
     mutationKey: ["login"],
     mutationFn: loginUser,
     onSuccess: (data) => {
-      console.log("Success", data.accessToken);
       setToken(data.accessToken);
       userData(data.user);
-      console.log("Success", data.user);
+      persist(true);
+
       navigate("/home");
     },
     onError: () => {
@@ -35,7 +37,6 @@ export const useRegister = () => {
     onSuccess: (accessToken) => {
       setToken(accessToken);
       persist(true);
-      console.log("ACCESS TOKEN set:", accessToken);
 
       navigate("/home");
     },
@@ -46,10 +47,16 @@ export const useRegister = () => {
 };
 
 export const useLogout = () => {
+  const clearToken = useStoreToken((state) => state.clearAccessToken);
+  const navigate = useNavigate();
+  const persist = useSetPersist();
   return useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
-      console.log("logout successful");
+      clearToken();
+
+      persist(false);
+      navigate("/");
     },
     onError: () => {
       console.log("error logout");

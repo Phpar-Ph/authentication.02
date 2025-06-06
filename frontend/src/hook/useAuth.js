@@ -1,17 +1,21 @@
 import { useMutation } from "@tanstack/react-query";
-import { useSetToken } from "../store/useTokenStore";
+import { useStoreToken } from "../store/useTokenStore";
 import { useNavigate } from "react-router";
 import { useSetPersist } from "../store/usePersistUserStore";
-import { register, login } from "../features/auth/api";
+import { registerUser, logoutUser, loginUser } from "../features/auth/api";
+import { useSetUserData } from "../store/useStoreUserData";
 export const useLoginUsers = () => {
-  const setToken = useSetToken();
-  const persist = useSetPersist();
   const navigate = useNavigate();
+  const userData = useSetUserData();
+  const setToken = useStoreToken((state) => state.setAccessToken);
   return useMutation({
-    mutationFn: login,
-    onSuccess: (accessToken) => {
-      setToken(accessToken);
-      persist(true);
+    mutationKey: ["login"],
+    mutationFn: loginUser,
+    onSuccess: (data) => {
+      console.log("Success", data.accessToken);
+      setToken(data.accessToken);
+      userData(data.user);
+      console.log("Success", data.user);
       navigate("/home");
     },
     onError: () => {
@@ -22,11 +26,12 @@ export const useLoginUsers = () => {
 
 // REgister
 export const useRegister = () => {
-  const setToken = useSetToken();
+  const setToken = useStoreToken((state) => state.setAccessToken);
   const persist = useSetPersist();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: register,
+    mutationKey: ["register"],
+    mutationFn: registerUser,
     onSuccess: (accessToken) => {
       setToken(accessToken);
       persist(true);
@@ -36,6 +41,18 @@ export const useRegister = () => {
     },
     onError: (data) => {
       console.log(data.response.data.message);
+    },
+  });
+};
+
+export const useLogout = () => {
+  return useMutation({
+    mutationFn: logoutUser,
+    onSuccess: () => {
+      console.log("logout successful");
+    },
+    onError: () => {
+      console.log("error logout");
     },
   });
 };

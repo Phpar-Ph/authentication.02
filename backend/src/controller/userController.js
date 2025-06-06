@@ -1,7 +1,9 @@
 import User from "../model/userModel.js";
+
 export const getUserData = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
+
     if (!user) {
       return res.json({
         success: false,
@@ -10,7 +12,7 @@ export const getUserData = async (req, res) => {
     }
     return res.json({
       success: true,
-      userData: {
+      user: {
         name: user.name,
         email: user.email,
       },

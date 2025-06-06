@@ -1,18 +1,20 @@
-import { useGetUserAuth, useGetUserData } from "../hook/useFetchData";
-import { Outlet, Navigate } from "react-router";
-import { useSetUserData } from "../store/useStoreUserData";
-import { useToken } from "../store/useTokenStore";
-import { useEffect, useState } from "react";
+import { Outlet } from "react-router";
+// import { useEffect } from "react";
+// import { queryClient } from "../main";
+// import { API_ROUTES } from "../constants/apiRoutes";
+// import axiosInstance from "../lib/axiosInstance";
+
 const Prefetch = () => {
-  const token = useToken();
+  //   useEffect(() => {
+  //     queryClient.prefetchQuery({
+  //       queryKey: ["userData"],
+  //       queryFn: async () => {
+  //         const res = axiosInstance.get(API_ROUTES.USER.DATA);
+  //         return res.data.userData;
+  //       },
+  //     });
+  //   }, []);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const { data: userData } = useGetUserData();
-  const { refetch: checkAuth } = useGetUserAuth();
-  const setUserData = useSetUserData();
-
-
-  
   return <Outlet />;
 };
 

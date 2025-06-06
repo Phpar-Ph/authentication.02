@@ -6,3 +6,4 @@ const useStoreData = create((set) => ({
 }));
 
 export const useSetUserData = () => useStoreData((state) => state.setUserData);
+export const useUserData = () => useStoreData((state) => state.userData);

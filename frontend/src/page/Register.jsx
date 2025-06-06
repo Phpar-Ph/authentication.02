@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { useRegister } from "../hook/useAuth";
-
 function Register() {
   const navigate = useNavigate();
   const { mutate } = useRegister();

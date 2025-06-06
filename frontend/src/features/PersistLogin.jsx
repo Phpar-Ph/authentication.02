@@ -1,53 +1,39 @@
-import { useEffect, useRef } from "react";
-import { usePersist } from "../store/usePersistUserStore";
-// import { useToken } from "../store/useTokenStore";
-// import { useRefresh } from "../hook/useRefresh";
-// import { useQuery } from "@tanstack/react-query";
-import { useSetToken } from "../store/useTokenStore";
-// import { useSetUserData } from "../store/useStoreUserData";
-import axios from "axios";
+// import { useEffect, useRef } from "react";
+// import { usePersist } from "../store/usePersistUserStore";
+// import { useSetToken } from "../store/useTokenStore";
+
+// import { axiosInstanceNoHeader } from "../lib/axiosInstance";
+// import { API_ROUTES } from "../constants/apiRoutes";
+
 import { Outlet } from "react-router";
 const PersistLogin = () => {
-  const persist = usePersist();
-  const effectRan = useRef(false);
-  const token = useSetToken();
-  // const accessTOken = useToken();
-  const baseURL = "http://localhost:5000";
+  // const persist = usePersist();
+  // const effectRan = useRef(false);
+  // const token = useSetToken();
 
-  // const { data } = useQuery({
-  //   queryKey: ["refresh"],
-  //   queryFn: useRefresh,
-  //   onSuccess: () => {
-  //     console.log("refresh");
-  //   },
-  //   enabled: false,
-  //   retry: false,
-  //   staleTime: Infinity,
-  // });
-
-  useEffect(() => {
-    if (effectRan.current === true || persist === true) {
-      const verifyRefresh = async () => {
-        console.log("verifying refresh token");
-        try {
-          const response = await axios.get(`${baseURL}/api/auth/refresh`, {
-            withCredentials: true,
-          });
-          token(response.data.accessToken);
-          return response.data.accessToken;
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      if (!token && persist) verifyRefresh();
-    }
-
-    return () => {
-      effectRan.current = true;
-      console.log("Ref clean up", effectRan);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   if (effectRan.current === true) {
+  //     console.log("running", effectRan);
+  //     const getRefreshToken = async () => {
+  //       try {
+  //         const { data } = await axiosInstanceNoHeader.get(
+  //           API_ROUTES.AUTH.REFRESH
+  //         );
+  //         console.log("data", data.accessToken);
+  //       } catch (err) {
+  //         console.error("error fetching", err);
+  //       }
+  //     };
+  //     if (!effectRan.current && persist && !token) {
+  //       getRefreshToken();
+  //       effectRan.current = true;
+  //     }
+  //   }
+  //   return () => {
+  //     effectRan.current = true;
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return <Outlet />;
 };

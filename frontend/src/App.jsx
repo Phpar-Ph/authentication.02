@@ -5,7 +5,7 @@ import Home from "./page/Home";
 import Layout from "./component/Layout";
 import Public from "./component/Public";
 import PersistLogin from "./features/PersistLogin";
-
+import Prefetch from "./features/Prefetch";
 function App() {
   return (
     <Routes>
@@ -13,9 +13,12 @@ function App() {
         <Route index element={<Public />} />
         <Route path="/login" element={<SignIn />} />
         <Route path="/register" element={<Register />} />
-        <Route element={<PersistLogin />}>
-          <Route path="/home" element={<Home />} />
-        </Route>
+        <Route path="/home" element={<Home />} />
+        {/* <Route element={<PersistLogin />}>
+          <Route element={<Prefetch />}>
+            <Route path="/home" element={<Home />} />
+          </Route>
+        </Route> */}
       </Route>
     </Routes>
   );

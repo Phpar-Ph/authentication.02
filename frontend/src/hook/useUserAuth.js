@@ -24,7 +24,6 @@ export const useLoginUsers = () => {
     onSuccess: (data) => {
       setToken(data.accessToken);
       persist(true);
-      console.log("success login", data.accessToken);
       navigate("/home");
     },
     onError: () => {
@@ -54,7 +53,6 @@ export const useRegister = () => {
     onSuccess: (accessToken) => {
       setToken(accessToken);
       persist(true);
-
       navigate("/home");
     },
     onError: (data) => {

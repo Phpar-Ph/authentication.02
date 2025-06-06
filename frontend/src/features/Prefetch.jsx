@@ -2,18 +2,20 @@ import { Outlet } from "react-router";
 import { useEffect } from "react";
 import { queryClient } from "../main";
 import { API_ROUTES } from "../constants/apiRoutes";
-import axiosPrivate from "../api/axiosPrivate";
+import useAxiosPrivate from "../hook/useAxiosPrivate";
 
 const Prefetch = () => {
-    useEffect(() => {
-      queryClient.prefetchQuery({
-        queryKey: ["userData"],
-        queryFn: async () => {
-          const res = axiosPrivate.get(API_ROUTES.USER.DATA);
-          return res.data.userData;
-        },
-      });
-    }, []);
+  const axiosPrivate = useAxiosPrivate();
+  useEffect(() => {
+    queryClient.prefetchQuery({
+      queryKey: ["userData"],
+      queryFn: async () => {
+        const res = axiosPrivate.get(API_ROUTES.USER.DATA);
+        return res.data.userData;
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <Outlet />;
 };

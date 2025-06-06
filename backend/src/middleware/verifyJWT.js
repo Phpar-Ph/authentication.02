@@ -14,7 +14,10 @@ const verifyJWT = async (req, res, next) => {
       next();
     }
   } catch (err) {
-    return res.status(403).json({ message: "Forbidden does not match" });
+    return res.status(403).json({
+      success: false,
+      message: "Forbidden",
+    });
   }
 };
 

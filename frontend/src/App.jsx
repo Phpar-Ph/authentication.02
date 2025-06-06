@@ -17,10 +17,9 @@ function App() {
         {/* <Route element={<NavBar />} /> */}
         {/* <Route path="/home" element={<Home />} /> */}
         <Route element={<PersistLogin />}>
-          <Route path="/home" element={<Home />} />
-          {/* <Route element={<Prefetch />}>
-           
-          </Route> */}
+          <Route element={<Prefetch />}>
+            <Route path="/home" element={<Home />} />
+          </Route>
         </Route>
       </Route>
     </Routes>

@@ -11,8 +11,5 @@ export const useGetUserData = () => {
   return useQuery({
     queryKey: ["userData"],
     queryFn: getUser,
-    onSuccess: (data) => {
-      console.log("SUCCESS", data);
-    },
   });
 };

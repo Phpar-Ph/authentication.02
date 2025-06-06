@@ -1,5 +1,5 @@
 import React from "react";
-import { useLogout } from "../hook/useAuth";
+import { useLogout } from "../hook/useUserAuth";
 
 function NavBar() {
   const { mutate: logout } = useLogout();

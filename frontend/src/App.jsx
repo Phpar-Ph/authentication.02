@@ -15,12 +15,13 @@ function App() {
         <Route path="/login" element={<SignIn />} />
         <Route path="/register" element={<Register />} />
         {/* <Route element={<NavBar />} /> */}
-        <Route path="/home" element={<Home />} />
-        {/* <Route element={<PersistLogin />}>
-          <Route element={<Prefetch />}>
-            <Route path="/home" element={<Home />} />
-          </Route>
-        </Route> */}
+        {/* <Route path="/home" element={<Home />} /> */}
+        <Route element={<PersistLogin />}>
+          <Route path="/home" element={<Home />} />
+          {/* <Route element={<Prefetch />}>
+           
+          </Route> */}
+        </Route>
       </Route>
     </Routes>
   );

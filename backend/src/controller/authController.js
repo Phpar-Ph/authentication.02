@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../model/userModel.js";
 // register
-const expireToken = "10s";
+const expireToken = "15s";
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
 
